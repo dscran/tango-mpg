@@ -37,3 +37,13 @@ Example:
 
 Usage:
 `python axis_serial.py --port /dev/ttyUSB0 --baud 115200`
+
+Loopback example:
+Create two virtual serial ports that pass messages between each other:
+`socat -d -d pty,rawer,echo=0 pty,rawer,echo=0`
+
+Assuming the two created ports are `/dev/pts/6` and `/dev/pts/7`, start the Listener:
+`python axis_serial.py --port /dev/pts/6 --interval 5`
+
+In another terminal, start a serial monitor (minicom, pyserial.miniterm, etc.)
+`python -m serial.tools.miniterm /dev/pts/7 115200 --eol LF --filter colorize --echo`
