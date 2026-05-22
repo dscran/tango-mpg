@@ -306,10 +306,17 @@ class SerialBus:
                 parts = raw.strip().split(",")
                 if len(parts) != 3:
                     raise ValueError(f"Expected 3 fields, got {len(parts)}: {raw!r}")
-                name, target_pos, velocity = parts
+                name, parameter, value = parts
                 axis = self._manager.get(name)
-                axis.set_velocity(float(velocity))
-                axis.move(float(target_pos))
+                parameter = parameter.lower()
+                if parameter == "velocity":
+                    axis.set_velocity(float(value))
+                elif parameter == "target":
+                    axis.move(float(value))
+                elif parameter == "stop":
+                    axis.stop()
+                else:
+                    logger.warning(f"Ignoring unknown parameter '{parameter}'.")
             except ValueError as exc:
                 logger.warning("Malformed telegram ignored: %s  (%r)", exc, raw)
                 continue
